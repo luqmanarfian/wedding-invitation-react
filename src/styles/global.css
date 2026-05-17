@@ -1,0 +1,137 @@
+/* === Tailwind Directives === */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Base Styles === */
+@layer base {
+  body {
+    color: #4a4a4a;
+    background-color: #fdf2f8;
+    overflow-x: hidden;
+  }
+}
+
+/* === Reusable Component Styles === */
+@layer components {
+  /* Glassmorphism card effect — frosted glass background */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(249, 168, 212, 0.2);
+  }
+
+  /* Parallax background effect */
+  .parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  /* Ornamental corner decorations using pseudo-elements */
+  .ornament-corner::before,
+  .ornament-corner::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23f9a8d4'%3E%3Cpath d='M50 10 C60 25 80 30 90 20 C85 40 70 50 50 50 C70 50 85 60 90 80 C80 70 60 75 50 90 C40 75 20 70 10 80 C15 60 30 50 50 50 C30 50 15 40 10 20 C20 30 40 25 50 10Z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .ornament-corner::before {
+    top: 10px;
+    left: 10px;
+    transform: rotate(-45deg);
+  }
+
+  .ornament-corner::after {
+    bottom: 10px;
+    right: 10px;
+    transform: rotate(135deg);
+  }
+}
+
+/* === Utility Animations === */
+@layer utilities {
+  /* Scroll-triggered fade-in animation */
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .fade-in-section.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* === Fixed Position Elements (outside Tailwind layers) === */
+
+/* Floating music button — spins when playing */
+#music-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  animation: spin 4s linear infinite;
+}
+
+#music-btn.paused {
+  animation-play-state: paused;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cover screen — slides up when opened */
+.cover-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: #fdf2f8;
+  transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.cover-screen.opened {
+  transform: translateY(-100%);
+}
+
+/* Toast notification — slides down from top */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.toast-notification.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Custom scrollbar for wishes container */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #fbcfe8;
+  border-radius: 3px;
+}
