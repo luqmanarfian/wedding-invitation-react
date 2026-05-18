@@ -18,9 +18,9 @@ COPY . .
 RUN npm run build
 
 # ==========================================
-# Stage 2: Production Stage (Nginx Web Server)
+# Stage 2: Production Stage (Nginx Unprivileged Web Server)
 # ==========================================
-FROM nginx:1.25-alpine
+FROM nginxinc/nginx-unprivileged:1.25-alpine
 
 # Salin hasil build (folder dist) dari stage sebelumnya ke direktori HTML Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
@@ -28,8 +28,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Salin konfigurasi kustom Nginx untuk menangani routing SPA React (Vite)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port default web server
-EXPOSE 80
+# Expose port non-privileged web server (default untuk nginx-unprivileged adalah 8080)
+EXPOSE 8080
 
 # Jalankan Nginx di foreground
 CMD ["nginx", "-g", "daemon off;"]
