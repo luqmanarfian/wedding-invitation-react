@@ -6,7 +6,7 @@
 
 // === Image imports (downloaded to public/images/) ===
 const IMAGES = {
-  heroBg: '/images/hero-bg.jpg',
+  heroBg: '/images/hero-bg.webp',
   groom: '/images/groom.jpg',
   bride: '/images/bride.jpg',
   gallery1: '/images/gallery-1.jpg',
