@@ -29,4 +29,3 @@ Jenkinsfile
 # Abaikan file docker itu sendiri di dalam build context
 Dockerfile
 .dockerignore
-nginx.conf
