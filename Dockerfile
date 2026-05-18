@@ -11,8 +11,10 @@ COPY package.json package-lock.json ./
 # Install dependensi secara bersih (clean install)
 RUN npm ci
 
-# Salin seluruh kode aplikasi ke dalam container
-COPY . .
+# Salin hanya asset dan konfigurasi yang dibutuhkan untuk proses build
+COPY src ./src
+COPY public ./public
+COPY index.html vite.config.js tailwind.config.js postcss.config.js ./
 
 # Build aplikasi React (output akan berada di folder /app/dist)
 RUN npm run build
