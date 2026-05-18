@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "portfolio-website-react"
-        IMAGE_NAME = "luqmanarfian/portfolio-website-react"
+        APP_NAME = "wedding-invitation-react"
+        IMAGE_NAME = "luqmanarfian/wedding-invitation-react"
         IMAGE_TAG = "${env.GIT_COMMIT}"
         BRANCH = "main"
         SONARQUBE_SERVER = "sonarqube-server"
