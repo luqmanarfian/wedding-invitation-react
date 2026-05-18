@@ -9,6 +9,8 @@ const IMAGES = {
   heroBg: '/images/hero-bg.jpg',
   groom: '/images/groom.jpg',
   bride: '/images/bride.jpg',
+  gallery1: '/images/gallery-1.jpg',
+  gallery2: '/images/gallery-2.jpg',
   gallery3: '/images/gallery-3.jpg',
   gallery4: '/images/gallery-4.jpg',
   gallery5: '/images/gallery-5.jpg',
@@ -28,7 +30,7 @@ export const COUPLE = {
     parents: 'Bapak ... & Ibu ...',
     role: 'Putra dari',
     socials: [
-      { platform: 'instagram', url: '#', icon: 'fab fa-instagram' },
+      { platform: 'instagram', url: 'https://www.instagram.com/lancy.06', icon: 'fab fa-instagram' },
     ],
   },
   bride: {
@@ -92,8 +94,8 @@ export const MAPS = {
 
 // === Gallery Images ===
 export const GALLERY_IMAGES = [
-  { src: IMAGES.bride, alt: 'Momen bersama 1' },
-  { src: IMAGES.groom, alt: 'Momen bersama 2' },
+  { src: IMAGES.gallery1, alt: 'Momen bersama 1' },
+  { src: IMAGES.gallery2, alt: 'Momen bersama 2' },
   { src: IMAGES.gallery3, alt: 'Momen bersama 3' },
   { src: IMAGES.gallery4, alt: 'Momen bersama 4' },
   { src: IMAGES.gallery5, alt: 'Momen bersama 5', wide: true },
