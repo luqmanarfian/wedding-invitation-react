@@ -19,6 +19,7 @@ spec:
         app: {{ .Values.workloadName }}
         {{- include "wedding-invitation-react-chart.selectorLabels" . | nindent 8 }}
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Values.workloadName }}
           image: {{ .Values.image.name }}

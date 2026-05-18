@@ -38,9 +38,12 @@ resources:
   limits:
     cpu: "15m"
     memory: "25Mi"
+    ephemeral-storage: 128Mi
+
   requests:
     cpu: "10m"
     memory: "20Mi"
+    ephemeral-storage: 128Mi
 
 autoscaling:
   enabled: true
