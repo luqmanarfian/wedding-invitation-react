@@ -25,7 +25,9 @@ import { GOOGLE_SHEETS_CONFIG } from '../data/content';
  */
 export function generateQRCodeId() {
   const timestamp = Date.now();
-  const random = Math.floor(1000 + Math.random() * 9000);
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  const random = 1000 + (array[0] % 9000);
   return `WEDDING-${timestamp}-${random}`;
 }
 
