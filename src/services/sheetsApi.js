@@ -10,7 +10,7 @@ import { GOOGLE_SHEETS_CONFIG } from '../data/content';
  * 1. Buka Google Sheets, buat spreadsheet baru
  * 2. Buat 2 sheet: "RSVP" dan "Ucapan"
  *    - Sheet RSVP: kolom A=Timestamp, B=Nama, C=Jumlah, D=Status, E=QR_Code_ID, F=Checked_In
- *    - Sheet Ucapan: kolom A=Timestamp, B=Nama, C=Ucapan, D=Status
+ *    - Sheet Ucapan: kolom A=Timestamp, B=Nama, C=Ucapan
  * 3. Buka Extensions > Apps Script
  * 4. Paste kode Google Apps Script (lihat prompt-to-save-data.md)
  * 5. Deploy > New Deployment > Web App > Execute as Me > Anyone can access
@@ -62,7 +62,7 @@ export async function submitRSVPToSheet(data) {
 
 /**
  * Kirim data Ucapan ke Google Sheets.
- * @param {{ name: string, text: string, status: string }} data
+ * @param {{ name: string, text: string }} data
  * @returns {Promise<{ result: string }>}
  */
 export async function submitWishToSheet(data) {

@@ -13,7 +13,6 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 export default function Rsvp({ guestName, onRSVPSuccess }) {
   const ref = useScrollReveal();
   const [wishes, setWishes] = useState(DEFAULT_WISHES);
-  const [rsvpStatus] = useState('Hadir');
 
   const handleNewWish = (wish) => {
     setWishes((prev) => [wish, ...prev]);
@@ -43,7 +42,6 @@ export default function Rsvp({ guestName, onRSVPSuccess }) {
 
             <WishForm
               guestName={guestName}
-              rsvpStatus={rsvpStatus}
               onNewWish={handleNewWish}
             />
 

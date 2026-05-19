@@ -10,7 +10,7 @@ vi.mock('./RsvpForm', () => ({
 
 vi.mock('./WishForm', () => ({
   default: ({ onNewWish }) => (
-    <button data-testid="mock-wish-form" onClick={() => onNewWish({ id: 2, name: 'Bob', text: 'Congrats', status: 'Hadir' })}>
+    <button data-testid="mock-wish-form" onClick={() => onNewWish({ id: 2, name: 'Bob', text: 'Congrats' })}>
       Submit Wish
     </button>
   )

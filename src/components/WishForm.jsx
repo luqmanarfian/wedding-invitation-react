@@ -6,7 +6,7 @@ import { submitWishToSheet } from '../services/sheetsApi';
  * WishForm — Form to submit greetings/wishes.
  * Adds new wishes to the parent list and sends to Google Sheets.
  */
-export default function WishForm({ guestName, rsvpStatus, onNewWish }) {
+export default function WishForm({ guestName, onNewWish }) {
   const { showToast } = useToast();
   const [name, setName] = useState(guestName);
   const [text, setText] = useState('');
@@ -19,14 +19,13 @@ export default function WishForm({ guestName, rsvpStatus, onNewWish }) {
     setLoading(true);
 
     // Send to Google Sheets
-    await submitWishToSheet({ name, text, status: rsvpStatus });
+    await submitWishToSheet({ name, text });
 
     // Add to local wish list (prepend to top)
     onNewWish({
       id: Date.now(),
       name,
       text,
-      status: rsvpStatus,
     });
 
     showToast('Berhasil', 'Ucapan Anda berhasil ditambahkan.');

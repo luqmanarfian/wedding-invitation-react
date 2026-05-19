@@ -114,7 +114,6 @@ export const DEFAULT_WISHES = [
     id: 1,
     name: 'Alucard & Miya',
     text: 'Selamat menempuh hidup baru sahabat! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Bahagia selalu di Land of Dawn maupun di dunia nyata! 🎉',
-    status: 'Hadir',
   },
 ];
 
