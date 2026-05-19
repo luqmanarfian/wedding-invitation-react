@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useToast } from '../context/ToastContext';
 import { submitRSVPToSheet } from '../services/sheetsApi';
 
@@ -92,3 +93,8 @@ export default function RSVPForm({ guestName, onRSVPSuccess }) {
     </div>
   );
 }
+
+RSVPForm.propTypes = {
+  guestName: PropTypes.string,
+  onRSVPSuccess: PropTypes.func
+};

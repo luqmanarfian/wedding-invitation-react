@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import PropTypes from 'prop-types';
 
 /**
  * QRCodeModal — Modal popup displaying a QR Code ticket after successful RSVP.
@@ -33,12 +34,13 @@ export default function QRCodeModal({ isOpen, onClose, qrCodeId, guestName, gues
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const link = document.createElement('a');
-      link.download = `tiket-${guestName.replace(/\s+/g, '-')}.png`;
+      const safeGuestName = guestName || '';
+      link.download = `tiket-${safeGuestName.replaceAll(/\s+/g, '-')}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     };
 
-    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    img.src = 'data:image/svg+xml;base64,' + btoa(decodeURIComponent(encodeURIComponent(svgData)));
   };
 
   return (
@@ -107,3 +109,11 @@ export default function QRCodeModal({ isOpen, onClose, qrCodeId, guestName, gues
     </div>
   );
 }
+
+QRCodeModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  qrCodeId: PropTypes.string,
+  guestName: PropTypes.string,
+  guestCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};

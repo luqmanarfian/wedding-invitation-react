@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import RSVPForm from './RSVPForm';
 import WishForm from './WishForm';
 import WishCard from './WishCard';
@@ -58,3 +59,8 @@ export default function RSVP({ guestName, onRSVPSuccess }) {
     </section>
   );
 }
+
+RSVP.propTypes = {
+  guestName: PropTypes.string,
+  onRSVPSuccess: PropTypes.func
+};

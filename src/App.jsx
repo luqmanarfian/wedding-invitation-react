@@ -11,7 +11,7 @@ import OurStory from './components/OurStory';
 import Event from './components/Event';
 import Gallery from './components/Gallery';
 import WeddingGift from './components/WeddingGift';
-import RSVP from './components/RSVP';
+import Rsvp from './components/RSVP';
 import Footer from './components/Footer';
 import MusicButton from './components/MusicButton';
 import QRCodeModal from './components/QRCodeModal';
@@ -67,7 +67,7 @@ export default function App() {
       <Event />
       <Gallery />
       <WeddingGift />
-      <RSVP guestName={guestName} onRSVPSuccess={handleRSVPSuccess} />
+      <Rsvp guestName={guestName} onRSVPSuccess={handleRSVPSuccess} />
       <Footer />
 
       {/* Floating music button — only visible after opening */}
