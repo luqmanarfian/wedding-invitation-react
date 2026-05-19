@@ -9,7 +9,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
  * RSVP — Wrapper section containing RSVP form and guest book (wishes).
  * Manages the wishes list state locally.
  */
-export default function RSVP({ guestName }) {
+export default function RSVP({ guestName, onRSVPSuccess }) {
   const ref = useScrollReveal();
   const [wishes, setWishes] = useState(DEFAULT_WISHES);
   const [rsvpStatus] = useState('Hadir');
@@ -32,7 +32,7 @@ export default function RSVP({ guestName }) {
 
         <div className="grid md:grid-cols-5 gap-8">
           {/* RSVP Form */}
-          <RSVPForm guestName={guestName} />
+          <RSVPForm guestName={guestName} onRSVPSuccess={onRSVPSuccess} />
 
           {/* Guest Book */}
           <div className="md:col-span-3 glass-card p-6 md:p-8 rounded-2xl flex flex-col">

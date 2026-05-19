@@ -14,6 +14,7 @@ import WeddingGift from './components/WeddingGift';
 import RSVP from './components/RSVP';
 import Footer from './components/Footer';
 import MusicButton from './components/MusicButton';
+import QRCodeModal from './components/QRCodeModal';
 
 /**
  * App — Root component that assembles all sections of the wedding invitation.
@@ -28,12 +29,29 @@ export default function App() {
   const { play } = useMusic();
   const [isOpened, setIsOpened] = useState(false);
 
+  // QR Code modal state managed at root level
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrCodeId, setQrCodeId] = useState(null);
+  const [qrGuestName, setQrGuestName] = useState('');
+  const [qrGuestCount, setQrGuestCount] = useState('1');
+
   const handleOpenInvitation = () => {
     setIsOpened(true);
     play(); // Start background music on user interaction
 
     // Enable scrolling on the body
     document.body.classList.remove('overflow-hidden');
+  };
+
+  /**
+   * Triggers the display of the QR code modal ticket.
+   * @param {{ qrCodeId: string, guestName: string, guestCount: string }} details
+   */
+  const handleRSVPSuccess = ({ qrCodeId, guestName, guestCount }) => {
+    setQrCodeId(qrCodeId);
+    setQrGuestName(guestName);
+    setQrGuestCount(guestCount);
+    setShowQRModal(true);
   };
 
   return (
@@ -49,11 +67,20 @@ export default function App() {
       <Event />
       <Gallery />
       <WeddingGift />
-      <RSVP guestName={guestName} />
+      <RSVP guestName={guestName} onRSVPSuccess={handleRSVPSuccess} />
       <Footer />
 
       {/* Floating music button — only visible after opening */}
       <MusicButton visible={isOpened} />
+
+      {/* QR Code Modal — full screen root level rendering */}
+      <QRCodeModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        qrCodeId={qrCodeId}
+        guestName={qrGuestName}
+        guestCount={qrGuestCount}
+      />
     </div>
   );
 }

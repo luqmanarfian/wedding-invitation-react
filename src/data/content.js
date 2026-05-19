@@ -129,6 +129,6 @@ export const HERO = {
 // === Google Sheets RSVP Config ===
 // Ganti URL ini dengan Web App URL dari Google Apps Script Anda
 export const GOOGLE_SHEETS_CONFIG = {
-  webAppUrl: '', // Isi setelah deploy Google Apps Script
-  enabled: false, // Set true setelah konfigurasi selesai
+  webAppUrl: 'https://script.google.com/macros/s/AKfycbxLsQdxWa27mjyHnPT6aShb82Vx-ml4dFY9YAanIIaGxw2yWBQdTajL3FJ0dXOAsGea8w/exec', // Isi setelah deploy Google Apps Script
+  enabled: true, // Set true setelah konfigurasi selesai
 };

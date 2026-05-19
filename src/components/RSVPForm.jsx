@@ -4,9 +4,10 @@ import { submitRSVPToSheet } from '../services/sheetsApi';
 
 /**
  * RSVPForm — Konfirmasi kehadiran form.
- * Sends data to Google Sheets (if configured) and shows toast notification.
+ * Sends data to Google Sheets (if configured), shows toast notification,
+ * and triggers parent handler to display the QR Code modal for attending guests.
  */
-export default function RSVPForm({ guestName }) {
+export default function RSVPForm({ guestName, onRSVPSuccess }) {
   const { showToast } = useToast();
   const [name, setName] = useState(guestName);
   const [count, setCount] = useState('1');
@@ -18,9 +19,22 @@ export default function RSVPForm({ guestName }) {
     setLoading(true);
 
     // Send to Google Sheets (or log locally if not configured)
-    await submitRSVPToSheet({ name, count, status });
+    const result = await submitRSVPToSheet({ name, count, status });
 
-    showToast('Terima Kasih!', 'Konfirmasi kehadiran Anda telah dikirim.');
+    if (status === 'Hadir' && result.qrCodeId) {
+      // Trigger parent handler to show QR Code modal
+      if (onRSVPSuccess) {
+        onRSVPSuccess({
+          qrCodeId: result.qrCodeId,
+          guestName: name,
+          guestCount: count
+        });
+      }
+      showToast('RSVP Berhasil!', 'QR Code tiket masuk Anda telah dibuat.');
+    } else {
+      showToast('Terima Kasih!', 'Konfirmasi kehadiran Anda telah dikirim.');
+    }
+
     setLoading(false);
 
     // Reset form but keep guest name
