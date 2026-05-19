@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import RSVPForm from './RSVPForm';
+import RsvpForm from './RsvpForm';
 import WishForm from './WishForm';
 import WishCard from './WishCard';
 import { DEFAULT_WISHES } from '../data/content';
@@ -10,7 +10,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
  * RSVP — Wrapper section containing RSVP form and guest book (wishes).
  * Manages the wishes list state locally.
  */
-export default function RSVP({ guestName, onRSVPSuccess }) {
+export default function Rsvp({ guestName, onRSVPSuccess }) {
   const ref = useScrollReveal();
   const [wishes, setWishes] = useState(DEFAULT_WISHES);
   const [rsvpStatus] = useState('Hadir');
@@ -33,7 +33,7 @@ export default function RSVP({ guestName, onRSVPSuccess }) {
 
         <div className="grid md:grid-cols-5 gap-8">
           {/* RSVP Form */}
-          <RSVPForm guestName={guestName} onRSVPSuccess={onRSVPSuccess} />
+          <RsvpForm guestName={guestName} onRSVPSuccess={onRSVPSuccess} />
 
           {/* Guest Book */}
           <div className="md:col-span-3 glass-card p-6 md:p-8 rounded-2xl flex flex-col">
@@ -60,7 +60,7 @@ export default function RSVP({ guestName, onRSVPSuccess }) {
   );
 }
 
-RSVP.propTypes = {
+Rsvp.propTypes = {
   guestName: PropTypes.string,
   onRSVPSuccess: PropTypes.func
 };

@@ -8,7 +8,7 @@ import { submitRSVPToSheet } from '../services/sheetsApi';
  * Sends data to Google Sheets (if configured), shows toast notification,
  * and triggers parent handler to display the QR Code modal for attending guests.
  */
-export default function RSVPForm({ guestName, onRSVPSuccess }) {
+export default function RsvpForm({ guestName, onRSVPSuccess }) {
   const { showToast } = useToast();
   const [name, setName] = useState(guestName);
   const [count, setCount] = useState('1');
@@ -94,7 +94,7 @@ export default function RSVPForm({ guestName, onRSVPSuccess }) {
   );
 }
 
-RSVPForm.propTypes = {
+RsvpForm.propTypes = {
   guestName: PropTypes.string,
   onRSVPSuccess: PropTypes.func
 };

@@ -27,7 +27,7 @@ vi.mock('./components/QRCodeModal', () => ({
   default: ({ isOpen, guestName }) => isOpen ? <div data-testid="mock-modal">{guestName}</div> : null
 }));
 
-vi.mock('./components/RSVP', () => ({
+vi.mock('./components/Rsvp', () => ({
   default: ({ onRSVPSuccess }) => (
     <button onClick={() => onRSVPSuccess({ qrCodeId: '123', guestName: 'Guest User', guestCount: '2' })}>
       Simulate RSVP Success

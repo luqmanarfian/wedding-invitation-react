@@ -11,7 +11,7 @@ import OurStory from './components/OurStory';
 import Event from './components/Event';
 import Gallery from './components/Gallery';
 import WeddingGift from './components/WeddingGift';
-import Rsvp from './components/RSVP';
+import Rsvp from './components/Rsvp';
 import Footer from './components/Footer';
 import MusicButton from './components/MusicButton';
 import QRCodeModal from './components/QRCodeModal';
