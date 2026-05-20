@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import RsvpForm from './RsvpForm';
 import WishForm from './WishForm';
 import WishCard from './WishCard';
 import { DEFAULT_WISHES } from '../data/content';
+import { fetchWishesFromSheet } from '../services/sheetsApi';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 /**
@@ -13,6 +14,22 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 export default function Rsvp({ guestName, onRSVPSuccess }) {
   const ref = useScrollReveal();
   const [wishes, setWishes] = useState(DEFAULT_WISHES);
+  const [isLoadingWishes, setIsLoadingWishes] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchWishesFromSheet().then((response) => {
+      if (isMounted && response.result === 'success' && response.wishes.length > 0) {
+        setWishes(response.wishes);
+      }
+      if (isMounted) {
+        setIsLoadingWishes(false);
+      }
+    });
+
+    return () => { isMounted = false; };
+  }, []);
 
   const handleNewWish = (wish) => {
     setWishes((prev) => [wish, ...prev]);
@@ -47,9 +64,16 @@ export default function Rsvp({ guestName, onRSVPSuccess }) {
 
             {/* Scrollable wishes list */}
             <div className="flex-1 max-h-[300px] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-              {wishes.map((wish) => (
-                <WishCard key={wish.id} {...wish} />
-              ))}
+              {isLoadingWishes ? (
+                <div className="text-center text-gray-400 py-8">
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Memuat ucapan...
+                </div>
+              ) : (
+                wishes.map((wish) => (
+                  <WishCard key={wish.id} {...wish} />
+                ))
+              )}
             </div>
           </div>
         </div>

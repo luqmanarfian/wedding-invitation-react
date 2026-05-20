@@ -85,3 +85,29 @@ export async function submitWishToSheet(data) {
     return { result: 'error', error };
   }
 }
+
+/**
+ * Ambil daftar ucapan dari Google Sheets.
+ * Menggunakan doGet di Google Apps Script dengan parameter ?type=wishes
+ * @returns {Promise<{ result: string, wishes?: Array<{ name: string, text: string }> }>}
+ */
+export async function fetchWishesFromSheet() {
+  if (!GOOGLE_SHEETS_CONFIG.enabled || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
+    return { result: 'disabled', wishes: [] };
+  }
+
+  try {
+    const url = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?type=wishes`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.result === 'success' && Array.isArray(data.wishes)) {
+      return { result: 'success', wishes: data.wishes };
+    }
+
+    return { result: 'error', wishes: [] };
+  } catch (error) {
+    console.error('[Sheets] Gagal ambil ucapan:', error); // NOSONAR
+    return { result: 'error', wishes: [] };
+  }
+}
