@@ -21,7 +21,7 @@ export default function Rsvp({ guestName, onRSVPSuccess }) {
 
     fetchWishesFromSheet().then((response) => {
       if (isMounted && response.result === 'success' && response.wishes.length > 0) {
-        setWishes(response.wishes);
+        setWishes([...response.wishes, ...DEFAULT_WISHES]);
       }
       if (isMounted) {
         setIsLoadingWishes(false);
@@ -50,7 +50,6 @@ export default function Rsvp({ guestName, onRSVPSuccess }) {
         <div className="grid md:grid-cols-5 gap-8">
           {/* RSVP Form */}
           <RsvpForm guestName={guestName} onRSVPSuccess={onRSVPSuccess} />
-
           {/* Guest Book */}
           <div className="md:col-span-3 glass-card p-6 md:p-8 rounded-2xl flex flex-col">
             <h3 className="font-bold text-xl mb-4 border-b border-blush-200 pb-2">
@@ -67,7 +66,7 @@ export default function Rsvp({ guestName, onRSVPSuccess }) {
               {isLoadingWishes ? (
                 <div className="text-center text-gray-400 py-8">
                   <i className="fas fa-spinner fa-spin mr-2"></i>
-                  Memuat ucapan...
+                  <span>Memuat ucapan...</span>
                 </div>
               ) : (
                 wishes.map((wish) => (
