@@ -15,6 +15,29 @@ import { submitRSVPToSheet } from '../services/sheetsApi';
  *    - Jika status Hadir: tampilkan QR Code modal.
  *    - Jika status Tidak Hadir: tampilkan pesan terima kasih.
  */
+/**
+ * Determines the submit button label based on current form state.
+ * Extracted to avoid nested ternary expressions (SonarQube rule).
+ *
+ * @param {boolean} isLoading - Whether the form is currently submitting
+ * @param {string|null} error - Current error message, if any
+ * @returns {React.ReactNode} Button label content
+ */
+function getButtonLabel(isLoading, error) {
+  if (isLoading) {
+    return (
+      <>
+        <i className="fas fa-spinner fa-spin mr-2"></i>
+        <span>Mengirim...</span>
+      </>
+    );
+  }
+
+  if (error) return 'Coba Lagi';
+
+  return 'Kirim RSVP';
+}
+
 export default function RsvpForm({ guestName, onRSVPSuccess }) {
   const { showToast } = useToast();
   const [name, setName] = useState(guestName);
@@ -123,16 +146,7 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
           disabled={loading}
           className="w-full bg-blush-500 hover:bg-blush-600 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? (
-            <>
-              <i className="fas fa-spinner fa-spin mr-2"></i>
-              <span>Mengirim...</span>
-            </>
-          ) : submitError ? (
-            'Coba Lagi'
-          ) : (
-            'Kirim RSVP'
-          )}
+          {getButtonLabel(loading, submitError)}
         </button>
       </form>
     </div>

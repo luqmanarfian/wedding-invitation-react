@@ -47,7 +47,7 @@ export function generateQRCodeId() {
  */
 export async function submitRSVPToSheet(data) {
   // Validasi input dasar sebelum request
-  if (!data.name || !data.name.trim()) {
+  if (!data.name?.trim()) {
     return { result: 'error', message: 'Nama tidak boleh kosong.' };
   }
 
@@ -69,7 +69,7 @@ export async function submitRSVPToSheet(data) {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         type: 'rsvp',
-        origin: window.location.origin,
+        origin: globalThis.location.origin,
         ...data,
         qrCodeId,
       }),
@@ -145,7 +145,7 @@ export async function submitWishToSheet(data) {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         type: 'wish',
-        origin: window.location.origin,
+        origin: globalThis.location.origin,
         ...data,
       }),
       signal: controller.signal,
@@ -184,7 +184,7 @@ export async function fetchWishesFromSheet() {
   }
 
   try {
-    const url = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?type=wishes&origin=${encodeURIComponent(window.location.origin)}`;
+    const url = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?type=wishes&origin=${encodeURIComponent(globalThis.location.origin)}`;
     const response = await fetch(url);
 
     if (!response.ok) {
