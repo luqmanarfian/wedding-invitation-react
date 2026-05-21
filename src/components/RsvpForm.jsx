@@ -5,8 +5,15 @@ import { submitRSVPToSheet } from '../services/sheetsApi';
 
 /**
  * RSVPForm — Konfirmasi kehadiran form.
- * Sends data to Google Sheets (if configured), shows toast notification,
- * and triggers parent handler to display the QR Code modal for attending guests.
+ *
+ * FLOW:
+ * 1. User submit form.
+ * 2. Data dikirim ke Google Sheets via API.
+ * 3. Jika API error (network error/timeout), tampilkan pesan error yang jelas.
+ *    QR Code TIDAK ditampilkan.
+ * 4. Jika API berhasil (request terkirim tanpa network error):
+ *    - Jika status Hadir: tampilkan QR Code modal.
+ *    - Jika status Tidak Hadir: tampilkan pesan terima kasih.
  */
 export default function RsvpForm({ guestName, onRSVPSuccess }) {
   const { showToast } = useToast();
@@ -14,33 +21,47 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
   const [count, setCount] = useState('1');
   const [status, setStatus] = useState('Hadir');
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Hindari double-submit saat loading
+    if (loading) return;
+
     setLoading(true);
+    setSubmitError(null);
 
-    // Send to Google Sheets (or log locally if not configured)
-    const result = await submitRSVPToSheet({ name, count, status });
-
-    if (status === 'Hadir' && result.qrCodeId) {
-      // Trigger parent handler to show QR Code modal
-      if (onRSVPSuccess) {
-        onRSVPSuccess({
-          qrCodeId: result.qrCodeId,
-          guestName: name,
-          guestCount: count
-        });
-      }
-      showToast('RSVP Berhasil!', 'QR Code tiket masuk Anda telah dibuat.');
-    } else {
-      showToast('Terima Kasih!', 'Konfirmasi kehadiran Anda telah dikirim.');
-    }
+    const result = await submitRSVPToSheet({ name: name.trim(), count, status });
 
     setLoading(false);
 
-    // Reset form but keep guest name
+    // Jika API gagal (network error atau timeout), JANGAN tampilkan success/QR.
+    if (result.result === 'error') {
+      const errMsg = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
+      setSubmitError(errMsg);
+      showToast('Gagal Mengirim RSVP', errMsg, 'error');
+      return;
+    }
+
+    // Berhasil terkirim ke server — reset form
     setCount('1');
     setStatus('Hadir');
+    setSubmitError(null);
+
+    if (status === 'Hadir' && result.qrCodeId) {
+      // Trigger parent untuk tampilkan QR Code modal
+      if (onRSVPSuccess) {
+        onRSVPSuccess({
+          qrCodeId: result.qrCodeId,
+          guestName: name.trim(),
+          guestCount: count,
+        });
+      }
+      showToast('RSVP Berhasil! 🎉', 'QR Code tiket masuk Anda telah dibuat. Harap simpan atau screenshot.');
+    } else {
+      showToast('Terima Kasih!', 'Konfirmasi ketidakhadiran Anda telah dikirim.');
+    }
   };
 
   return (
@@ -48,6 +69,18 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
       <h3 className="font-bold text-xl mb-4 border-b border-blush-200 pb-2">
         Konfirmasi Kehadiran
       </h3>
+
+      {/* Error Banner — tampil jika API gagal */}
+      {submitError && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-sm text-red-700" role="alert">
+          <i className="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+          <div>
+            <p className="font-semibold">RSVP Gagal Dikirim</p>
+            <p className="mt-0.5">{submitError}</p>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-text-main mb-1">Nama Lengkap</label>
@@ -56,7 +89,8 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80"
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80 disabled:opacity-50"
           />
         </div>
         <div className="mb-4">
@@ -64,7 +98,8 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
           <select
             value={count}
             onChange={(e) => setCount(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80"
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80 disabled:opacity-50"
           >
             <option value="1">1 Orang</option>
             <option value="2">2 Orang</option>
@@ -76,7 +111,8 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             required
-            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80"
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-lg border border-blush-200 focus:outline-none focus:ring-2 focus:ring-blush-400 bg-white bg-opacity-80 disabled:opacity-50"
           >
             <option value="Hadir">Ya, Saya akan hadir</option>
             <option value="Tidak Hadir">Maaf, saya tidak bisa hadir</option>
@@ -85,9 +121,18 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blush-500 hover:bg-blush-600 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50"
+          className="w-full bg-blush-500 hover:bg-blush-600 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Mengirim...' : 'Kirim RSVP'}
+          {loading ? (
+            <>
+              <i className="fas fa-spinner fa-spin mr-2"></i>
+              <span>Mengirim...</span>
+            </>
+          ) : submitError ? (
+            'Coba Lagi'
+          ) : (
+            'Kirim RSVP'
+          )}
         </button>
       </form>
     </div>
@@ -96,5 +141,5 @@ export default function RsvpForm({ guestName, onRSVPSuccess }) {
 
 RsvpForm.propTypes = {
   guestName: PropTypes.string,
-  onRSVPSuccess: PropTypes.func
+  onRSVPSuccess: PropTypes.func,
 };
