@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Build Stage (Node.js Environment)
 # ==========================================
-FROM node:20-alpine AS build
+FROM node:20-alpine3.21 AS build
 
 WORKDIR /app
 
@@ -22,7 +22,16 @@ RUN npm run build
 # ==========================================
 # Stage 2: Production Stage (Nginx Unprivileged Web Server)
 # ==========================================
-FROM nginxinc/nginx-unprivileged:1.25-alpine
+FROM nginxinc/nginx-unprivileged:1.27-alpine3.21
+
+# Upgrade semua paket OS ke versi terbaru untuk menutup vulnerability,
+# lalu hapus paket yang tidak dibutuhkan untuk serving static files
+# agar attack surface lebih kecil dan image tetap ringan.
+RUN apk update && apk upgrade --no-cache \
+    && apk del --no-cache \
+        curl \
+        libxml2 \
+        libxslt
 
 # Salin hasil build (folder dist) dari stage sebelumnya ke direktori HTML Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
