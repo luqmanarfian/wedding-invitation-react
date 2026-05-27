@@ -54,6 +54,7 @@ Desktop.ini
 .agents/
 .gemini/
 AGENTS.md
+agents*
 
 # Testing
 coverage/

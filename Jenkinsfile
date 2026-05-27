@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
     environment {
         APP_NAME = "wedding-invitation-react"
         IMAGE_NAME = "luqmanarfian/wedding-invitation-react"
@@ -25,7 +32,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm install'
+                sh 'npm ci'
                 sh 'npm run coverage'
             }
         }
@@ -62,6 +69,26 @@ pipeline {
             }
         }
 
+        stage('Security Scan') {
+            agent {
+                docker {
+                    image 'aquasec/trivy:0.51.1'
+                    args "-v ${WORKSPACE}/.trivy-cache:/root/.cache/trivy"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh """
+                trivy image \
+                  --exit-code 1 \
+                  --severity HIGH,CRITICAL \
+                  --cache-dir /root/.cache/trivy \
+                  --no-progress \
+                  ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+        }
+
         stage('Push Docker Image') {
             steps {
                 script {
@@ -89,8 +116,15 @@ pipeline {
     }
 
     post {
+        success {
+            echo "Pipeline succeeded! Image ${IMAGE_NAME}:${IMAGE_TAG} deployed."
+        }
         failure {
-            sh "helm rollback ${APP_NAME} || true"
+            echo "Pipeline failed! Rolling back ${APP_NAME}..."
+            sh "helm rollback ${APP_NAME} || echo 'Rollback failed or not applicable'"
+        }
+        always {
+            cleanWs()
         }
     }
 }
