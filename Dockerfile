@@ -24,6 +24,9 @@ RUN npm run build
 # ==========================================
 FROM nginxinc/nginx-unprivileged:1.27-alpine3.21
 
+# Sementara beralih ke root untuk menjalankan apk (nginx-unprivileged default user = nginx)
+USER root
+
 # Upgrade semua paket OS ke versi terbaru untuk menutup vulnerability,
 # lalu hapus paket yang tidak dibutuhkan untuk serving static files
 # agar attack surface lebih kecil dan image tetap ringan.
@@ -31,7 +34,11 @@ RUN apk update && apk upgrade --no-cache \
     && apk del --no-cache \
         curl \
         libxml2 \
-        libxslt
+        libxslt \
+    && rm -rf /var/cache/apk/*
+
+# Kembali ke user nginx (non-root) untuk keamanan runtime
+USER nginx
 
 # Salin hasil build (folder dist) dari stage sebelumnya ke direktori HTML Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
