@@ -73,7 +73,9 @@ pipeline {
             agent {
                 docker {
                     image 'aquasec/trivy:0.51.1'
-                    args "-v ${WORKSPACE}/.trivy-cache:/root/.cache/trivy"
+                    // Mengembalikan cache mount ke /tmp host namun diisolasi per APP_NAME 
+                    // untuk menghindari "read-only file system" error pada /var/jenkins_home
+                    args "-v /tmp/trivy-cache-${APP_NAME}:/root/.cache/trivy"
                     reuseNode true
                 }
             }
