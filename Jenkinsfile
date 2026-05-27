@@ -73,9 +73,9 @@ pipeline {
             agent {
                 docker {
                     image 'aquasec/trivy:0.51.1'
-                    // Mengembalikan cache mount ke /tmp host namun diisolasi per APP_NAME 
-                    // untuk menghindari "read-only file system" error pada /var/jenkins_home
-                    args "-v /tmp/trivy-cache-${APP_NAME}:/root/.cache/trivy"
+                    // Menghapus argumen volume mount cache sama sekali.
+                    // Trivy akan menggunakan cache sementara (ephemeral) di dalam container,
+                    // menghindari masalah mount path di berbagai environment Docker host.
                     reuseNode true
                 }
             }
@@ -84,7 +84,6 @@ pipeline {
                 trivy image \
                   --exit-code 1 \
                   --severity HIGH,CRITICAL \
-                  --cache-dir /root/.cache/trivy \
                   --no-progress \
                   ${IMAGE_NAME}:${IMAGE_TAG}
                 """
