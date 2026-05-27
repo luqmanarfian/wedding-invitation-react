@@ -70,21 +70,18 @@ pipeline {
         }
 
         stage('Security Scan') {
-            agent {
-                docker {
-                    image 'aquasec/trivy:0.51.1'
-                    // Menghapus argumen volume mount cache sama sekali.
-                    // Trivy akan menggunakan cache sementara (ephemeral) di dalam container,
-                    // menghindari masalah mount path di berbagai environment Docker host.
-                    reuseNode true
-                }
-            }
             steps {
+                // Menjalankan perintah lewat 'docker run' langsung terbukti jauh lebih stabil daripada
+                // menggunakan agent { docker } yang rentan terhadap timeout heartbeat Jenkins (durable-task).
+                // Menyertakan docker.sock agar Trivy bisa membaca image Docker lokal hasil build sebelumnya,
+                // serta menggunakan Docker Named Volume untuk cache yang dijamin bebas konflik filesystem.
                 sh """
-                trivy image \
+                docker run --rm \
+                  -v /var/run/docker.sock:/var/run/docker.sock \
+                  -v trivy-cache-${APP_NAME}:/root/.cache/trivy \
+                  aquasec/trivy:0.51.1 image \
                   --exit-code 1 \
                   --severity HIGH,CRITICAL \
-                  --no-progress \
                   ${IMAGE_NAME}:${IMAGE_TAG}
                 """
             }
