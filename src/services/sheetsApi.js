@@ -6,8 +6,10 @@ import { GOOGLE_SHEETS_CONFIG } from '../data/content';
  * Mengirim data RSVP dan Ucapan ke Google Sheets via Google Apps Script Web App.
  *
  * ARSITEKTUR:
- * - POST dikirim dengan Content-Type: 'text/plain' (simple request, tidak trigger CORS preflight).
- * - Menggunakan mode: 'cors' (bukan 'no-cors') agar browser bisa MEMBACA response body.
+ * - POST dikirim dengan Content-Type: 'text/plain' (simple request,
+ *   tidak trigger CORS preflight).
+ * - Google Apps Script Web App me-redirect request dan mengembalikan
+ *   JSON response yang bisa dibaca oleh browser.
  * - Response body dibaca dan divalidasi → QR hanya ditampilkan jika result === 'success'.
  *
  * SYARAT DI APPS SCRIPT:
@@ -38,8 +40,9 @@ export function generateQRCodeId() {
 /**
  * Kirim data RSVP ke Google Sheets dan validasi response-nya.
  *
- * Karena menggunakan mode: 'cors' dengan Content-Type: 'text/plain' (simple request),
- * browser dapat membaca response body dari Google Apps Script.
+ * POST dikirim dengan Content-Type: 'text/plain' (simple request) sehingga
+ * browser tidak memerlukan CORS preflight. Google Apps Script akan me-redirect
+ * dan mengembalikan JSON response yang bisa dibaca browser.
  * QR Code hanya ditampilkan jika Apps Script benar-benar mengembalikan result: 'success'.
  *
  * @param {{ name: string, count: string, status: string }} data
@@ -65,11 +68,9 @@ export async function submitRSVPToSheet(data) {
 
     const response = await fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
       method: 'POST',
-      mode: 'cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         type: 'rsvp',
-        origin: globalThis.location.origin,
         ...data,
         qrCodeId,
       }),
@@ -141,11 +142,9 @@ export async function submitWishToSheet(data) {
 
     const response = await fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
       method: 'POST',
-      mode: 'cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         type: 'wish',
-        origin: globalThis.location.origin,
         ...data,
       }),
       signal: controller.signal,
@@ -184,7 +183,7 @@ export async function fetchWishesFromSheet() {
   }
 
   try {
-    const url = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?type=wishes&origin=${encodeURIComponent(globalThis.location.origin)}`;
+    const url = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?type=wishes`;
     const response = await fetch(url);
 
     if (!response.ok) {
